@@ -10,10 +10,10 @@ model_select = function(covariates, responses, cutoff)
   index = c() 
   df = data.frame(cov = covariates, res = responses)
   model = lm(formula = res ~ cov.1 + cov.2 + cov.3 + cov.4 + cov.5 + cov.6, data = df)
-  summ = summary(model)
+  sum1 = summary(model)
   for (i in 23:28)
   {
-    if (summ[[4]][i] <= cutoff) 
+    if (sum1[[4]][i] <= cutoff) 
     {
       index = c(index, (i - 22)) #index of the column to keep
     }
@@ -28,9 +28,8 @@ model_select = function(covariates, responses, cutoff)
 }
 
 make_plot = function(datapath){
-  
   result = readLines(datapath)
-  return(hist(result))
+  return (hist(result))
 }
 
 run_simulation = function(n_trials, n, p, cutoff){
@@ -41,23 +40,18 @@ run_simulation = function(n_trials, n, p, cutoff){
     val = generate_data(n,p)
     mat = val$covariates
     vec = val$responses
-    output = model_select(mat,vec,cutoff)
-    result = c(result, output)
+    op = model_select(mat,vec,cutoff)
+    result = c(result, op)
   }
-  write(result, file = "result.txt")
-  return( make_plot("result.txt") )
+  write(result, file = "res.txt")
+  return( make_plot("res.txt") )
   
 }
 
-allN = c(100, 1000,10000)
-
-allP = c(10,20,50)
-
-for(i in 1:length(allN)){
-  
-  for(j in 1:length(allP)){
-    
-    
-    run_simulation(5, allN[i], allP[j], 0.05)
+N = c(100, 1000,10000)
+P = c(10,20,50)
+for(i in 1:length(N)){
+  for(j in 1:length(P)){
+    run_simulation(5, N[i], P[j], 0.05)
   }
 }
